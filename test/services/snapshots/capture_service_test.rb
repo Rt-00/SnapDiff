@@ -21,7 +21,7 @@ class Snapshots::CaptureServiceTest < ActiveSupport::TestCase
 
   test "accepts triggered_by parameter" do
     stub_request(:get, "https://api.example.com/data")
-      .to_return(status: 200, body: '{}', headers: {})
+      .to_return(status: 200, body: "{}", headers: {})
 
     result = Snapshots::CaptureService.new(endpoint: @endpoint, triggered_by: "ci").call
 
@@ -65,7 +65,7 @@ class Snapshots::CaptureServiceTest < ActiveSupport::TestCase
 
     stub_request(:get, "https://api.example.com/data")
       .with(headers: { "Authorization" => "Bearer secret" })
-      .to_return(status: 200, body: '{}', headers: {})
+      .to_return(status: 200, body: "{}", headers: {})
 
     result = Snapshots::CaptureService.new(endpoint: @endpoint).call
     assert result.success?
@@ -74,7 +74,7 @@ class Snapshots::CaptureServiceTest < ActiveSupport::TestCase
   test "does not send body for GET requests" do
     stub_request(:get, "https://api.example.com/data")
       .with(body: nil)
-      .to_return(status: 200, body: '{}', headers: {})
+      .to_return(status: 200, body: "{}", headers: {})
 
     result = Snapshots::CaptureService.new(endpoint: @endpoint).call
     assert result.success?
@@ -96,7 +96,7 @@ class Snapshots::CaptureServiceTest < ActiveSupport::TestCase
 
   test "enqueues DiffAndAlertJob after successful capture" do
     stub_request(:get, "https://api.example.com/data")
-      .to_return(status: 200, body: '{}', headers: {})
+      .to_return(status: 200, body: "{}", headers: {})
 
     assert_enqueued_with(job: DiffAndAlertJob) do
       Snapshots::CaptureService.new(endpoint: @endpoint).call

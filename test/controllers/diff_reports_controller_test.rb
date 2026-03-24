@@ -57,7 +57,7 @@ class DiffReportsControllerTest < ActionDispatch::IntegrationTest
     report = DiffReport.create!(
       snapshot_a: @snapshot_a,
       snapshot_b: @snapshot_b,
-      diff_data: { added: [], removed: [], changed: [{ path: "name", old: "Alice", new: "Bob" }] },
+      diff_data: { added: [], removed: [], changed: [ { path: "name", old: "Alice", new: "Bob" } ] },
       summary: "1 changed"
     )
     get diff_report_path(report)

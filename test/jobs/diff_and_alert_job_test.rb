@@ -31,7 +31,7 @@ class DiffAndAlertJobTest < ActiveJob::TestCase
   end
 
   test "can be enqueued" do
-    assert_enqueued_with(job: DiffAndAlertJob, args: [@snapshot_b.id]) do
+    assert_enqueued_with(job: DiffAndAlertJob, args: [ @snapshot_b.id ]) do
       DiffAndAlertJob.perform_later(@snapshot_b.id)
     end
   end

@@ -18,7 +18,7 @@ module Endpoints
     private
 
     def scheduled_endpoints
-      Endpoint.where.not(schedule: [nil, ""])
+      Endpoint.where.not(schedule: [ nil, "" ])
     end
 
     def due?(endpoint)

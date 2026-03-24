@@ -90,7 +90,7 @@ products_v1 = {
       ],
       "attributes" => { "color" => "black", "size" => "M", "weight_g" => 200 },
       "rating" => { "average" => 4.7, "count" => 312 },
-      "tags" => ["bestseller", "cotton", "unisex"],
+      "tags" => [ "bestseller", "cotton", "unisex" ],
       "created_at" => "2024-01-15T10:00:00Z",
       "updated_at" => "2025-11-20T08:30:00Z"
     },
@@ -108,7 +108,7 @@ products_v1 = {
       ],
       "attributes" => { "color" => "grey", "size" => "L", "weight_g" => 450, "material" => "80% cotton, 20% polyester" },
       "rating" => { "average" => 4.5, "count" => 89 },
-      "tags" => ["cotton", "winter"],
+      "tags" => [ "cotton", "winter" ],
       "created_at" => "2024-03-01T12:00:00Z",
       "updated_at" => "2025-09-10T14:00:00Z"
     },
@@ -125,7 +125,7 @@ products_v1 = {
       ],
       "attributes" => { "color" => "red", "size" => "one-size", "adjustable" => true },
       "rating" => { "average" => 4.2, "count" => 47 },
-      "tags" => ["cap", "streetwear"],
+      "tags" => [ "cap", "streetwear" ],
       "created_at" => "2024-06-20T09:00:00Z",
       "updated_at" => "2025-06-01T11:00:00Z"
     }
@@ -149,7 +149,7 @@ products_v2 = {
       ],
       "attributes" => { "color" => "black", "size" => "M", "weight_g" => 200 },
       "rating" => { "average" => 4.8, "count" => 401 },
-      "tags" => ["bestseller", "cotton", "unisex", "new-price"],
+      "tags" => [ "bestseller", "cotton", "unisex", "new-price" ],
       "seo" => { "title" => "Classic Black T-Shirt | SnapMerch", "description" => "Premium cotton tee." },
       "created_at" => "2024-01-15T10:00:00Z",
       "updated_at" => "2026-03-20T08:30:00Z"
@@ -168,7 +168,7 @@ products_v2 = {
       ],
       "attributes" => { "color" => "grey", "size" => "L", "weight_g" => 450, "material" => "80% cotton, 20% polyester" },
       "rating" => { "average" => 4.5, "count" => 91 },
-      "tags" => ["cotton", "winter"],
+      "tags" => [ "cotton", "winter" ],
       "created_at" => "2024-03-01T12:00:00Z",
       "updated_at" => "2026-03-22T14:00:00Z"
     },
@@ -185,7 +185,7 @@ products_v2 = {
       ],
       "attributes" => { "color" => "navy", "size" => "M", "weight_g" => 380, "material" => "French Terry" },
       "rating" => { "average" => 0.0, "count" => 0 },
-      "tags" => ["new", "jogger", "cotton"],
+      "tags" => [ "new", "jogger", "cotton" ],
       "created_at" => "2026-03-24T00:00:00Z",
       "updated_at" => "2026-03-24T00:00:00Z"
     }
@@ -292,7 +292,7 @@ order_shipped = {
   },
   "timeline" => [
     { "event" => "order_placed",    "at" => "2026-03-20T14:22:00Z" },
-    { "event" => "payment_captured","at" => "2026-03-20T14:25:00Z" },
+    { "event" => "payment_captured", "at" => "2026-03-20T14:25:00Z" },
     { "event" => "order_packed",    "at" => "2026-03-21T18:00:00Z" },
     { "event" => "shipped",         "at" => "2026-03-22T09:15:00Z" }
   ]
@@ -359,7 +359,7 @@ payment_v1 = {
   "currency" => "brl",
   "status" => "requires_payment_method",
   "client_secret" => "pi_3OxKtest_secret_xxx",
-  "payment_method_types" => ["card"],
+  "payment_method_types" => [ "card" ],
   "metadata" => { "order_id" => "ORD-1042", "user_id" => "USR-88" },
   "created" => 1742479320,
   "livemode" => false,
@@ -375,7 +375,7 @@ payment_v2 = {
   "currency" => "brl",
   "status" => "succeeded",
   "payment_method" => "pm_card_visa",
-  "payment_method_types" => ["card", "pix"],
+  "payment_method_types" => [ "card", "pix" ],
   "metadata" => { "order_id" => "ORD-1042", "user_id" => "USR-88", "discount_code" => "SPRING10" },
   "created" => 1742479320,
   "livemode" => false,
@@ -419,11 +419,11 @@ ep_payment.update!(baseline_snapshot: s_pay_v1)
 puts "  Generating diff reports..."
 
 [
-  [s_products_v1,  s_products_v2,  "Products: price + stock + new SKU"],
-  [s_order_placed, s_order_shipped, "Order: placed → shipped"],
-  [s_profile_v1,   s_profile_v2,   "Profile: verification + loyalty tier"],
-  [s_pay_v1,       s_pay_v2,       "Payment: requires_payment_method → succeeded"],
-  [s_pay_v2,       s_pay_v3_err,   "Payment: succeeded → 404 error"]
+  [ s_products_v1,  s_products_v2,  "Products: price + stock + new SKU" ],
+  [ s_order_placed, s_order_shipped, "Order: placed → shipped" ],
+  [ s_profile_v1,   s_profile_v2,   "Profile: verification + loyalty tier" ],
+  [ s_pay_v1,       s_pay_v2,       "Payment: requires_payment_method → succeeded" ],
+  [ s_pay_v2,       s_pay_v3_err,   "Payment: succeeded → 404 error" ]
 ].each do |snap_a, snap_b, label|
   service   = Snapshots::DiffService.new(snap_b)
   diff_data = service.send(:compute_diff, snap_a.response_body, snap_b.response_body)

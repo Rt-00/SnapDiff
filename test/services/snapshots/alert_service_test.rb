@@ -8,7 +8,7 @@ class Snapshots::AlertServiceTest < ActiveSupport::TestCase
     @report    = DiffReport.create!(
       snapshot_a: @snap_a,
       snapshot_b: @snap_b,
-      diff_data:  { added: [{ path: "b", value: 2 }], removed: [{ path: "a", value: 1 }], changed: [] },
+      diff_data:  { added: [ { path: "b", value: 2 } ], removed: [ { path: "a", value: 1 } ], changed: [] },
       summary:    "1 added, 1 removed"
     )
   end

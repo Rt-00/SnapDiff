@@ -52,7 +52,7 @@ class Api::V1::SnapshotsControllerTest < ActionDispatch::IntegrationTest
 
   test "sets triggered_by to ci" do
     stub_request(:get, @endpoint.url)
-      .to_return(status: 200, body: '{}', headers: {})
+      .to_return(status: 200, body: "{}", headers: {})
 
     post capture_api_v1_snapshots_url,
          params: { endpoint_id: @endpoint.id },

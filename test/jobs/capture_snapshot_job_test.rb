@@ -16,7 +16,7 @@ class CaptureSnapshotJobTest < ActiveJob::TestCase
 
   test "sets triggered_by to scheduled by default" do
     stub_request(:get, @endpoint.url)
-      .to_return(status: 200, body: '{}', headers: {})
+      .to_return(status: 200, body: "{}", headers: {})
 
     CaptureSnapshotJob.perform_now(@endpoint.id)
     assert_equal "scheduled", Snapshot.last.triggered_by
@@ -24,7 +24,7 @@ class CaptureSnapshotJobTest < ActiveJob::TestCase
 
   test "accepts custom triggered_by" do
     stub_request(:get, @endpoint.url)
-      .to_return(status: 200, body: '{}', headers: {})
+      .to_return(status: 200, body: "{}", headers: {})
 
     CaptureSnapshotJob.perform_now(@endpoint.id, triggered_by: "ci")
     assert_equal "ci", Snapshot.last.triggered_by
@@ -37,7 +37,7 @@ class CaptureSnapshotJobTest < ActiveJob::TestCase
   end
 
   test "can be enqueued" do
-    assert_enqueued_with(job: CaptureSnapshotJob, args: [@endpoint.id]) do
+    assert_enqueued_with(job: CaptureSnapshotJob, args: [ @endpoint.id ]) do
       CaptureSnapshotJob.perform_later(@endpoint.id)
     end
   end
