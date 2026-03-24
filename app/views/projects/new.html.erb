@@ -1,0 +1,13 @@
+<% content_for :title, "New Project — SnapDiff" %>
+
+<div class="max-w-lg">
+  <nav class="text-sm mb-5" style="color: #a89984;">
+    <%= link_to "Projects", projects_path, style: "color: #83a598;" %> / New project
+  </nav>
+
+  <h1 class="text-2xl font-bold mb-6" style="color: #ebdbb2;">New project</h1>
+
+  <div class="rounded-lg p-6" style="background-color: #3c3836; border: 1px solid #504945;">
+    <%= render "form", project: @project %>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<% content_for :title, "Projects — SnapDiff" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold" style="color: #ebdbb2;">Projects</h1>
+    <p class="text-sm mt-0.5" style="color: #a89984;">Monitor API endpoints across projects</p>
+  </div>
+  <%= link_to "New project", new_project_path,
+        class: "px-4 py-2 rounded font-medium text-sm",
+        style: "background-color: #fe8019; color: #282828;" %>
+</div>
+
+<% if @projects.empty? %>
+  <div class="text-center py-20 rounded-lg" style="border: 2px dashed #504945;">
+    <p class="text-4xl mb-3">⬡</p>
+    <p class="font-medium mb-1" style="color: #ebdbb2;">No projects yet</p>
+    <p class="text-sm mb-4" style="color: #a89984;">Create a project to start monitoring API endpoints</p>
+    <%= link_to "Create your first project", new_project_path,
+          class: "px-4 py-2 rounded font-medium text-sm",
+          style: "background-color: #fe8019; color: #282828;" %>
+  </div>
+<% else %>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <% @projects.each do |project| %>
+      <div class="rounded-lg p-5 group" style="background-color: #3c3836; border: 1px solid #504945;">
+        <div class="flex items-start justify-between mb-3">
+          <%= link_to project_path(project) do %>
+            <h2 class="font-semibold text-lg leading-tight group-hover:underline" style="color: #ebdbb2;">
+              <%= project.name %>
+            </h2>
+          <% end %>
+          <div class="flex gap-1 ml-2 flex-shrink-0">
+            <%= link_to "Edit", edit_project_path(project),
+                  class: "text-xs px-2 py-1 rounded",
+                  style: "color: #a89984; background-color: #282828;" %>
+            <%= button_to "Delete", project_path(project), method: :delete,
+                  data: { turbo_confirm: "Delete project \"#{project.name}\"? This will also delete all its endpoints and snapshots." },
+                  class: "text-xs px-2 py-1 rounded cursor-pointer",
+                  style: "color: #fb4934; background-color: #282828; border: none;" %>
+          </div>
+        </div>
+
+        <% if project.description.present? %>
+          <p class="text-sm mb-3 line-clamp-2" style="color: #a89984;"><%= project.description %></p>
+        <% end %>
+
+        <div class="flex items-center gap-3 text-xs" style="color: #665c54;">
+          <span><%= pluralize(project.endpoints.count, "endpoint") %></span>
+          <span>·</span>
+          <span>Created <%= project.created_at.strftime("%b %d, %Y") %></span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= pagy_nav(@pagy) if @pagy.pages > 1 %>
+<% end %>
