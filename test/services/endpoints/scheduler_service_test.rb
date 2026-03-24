@@ -32,11 +32,14 @@ class Endpoints::SchedulerServiceTest < ActiveSupport::TestCase
   end
 
   test "does not enqueue when last snapshot was recent" do
-    # Create a snapshot just 1 minute ago — shouldn't be due yet for a 5-minute schedule
-    create(:snapshot, endpoint: @endpoint_with_schedule, taken_at: 1.minute.ago)
+    # Freeze time to 12:02 — safely in the middle of a 5-minute cron interval.
+    # Snapshot at 12:01, next run at 12:05, so it is not due yet.
+    travel_to Time.zone.parse("2026-01-01 12:02:00") do
+      create(:snapshot, endpoint: @endpoint_with_schedule, taken_at: 1.minute.ago)
 
-    assert_no_enqueued_jobs do
-      Endpoints::SchedulerService.call
+      assert_no_enqueued_jobs do
+        Endpoints::SchedulerService.call
+      end
     end
   end
 
