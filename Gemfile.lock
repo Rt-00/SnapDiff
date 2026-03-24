@@ -447,6 +447,7 @@ DEPENDENCIES
   diffy
   factory_bot_rails
   faraday
+  fugit
   hashdiff
   image_processing (~> 1.2)
   importmap-rails
