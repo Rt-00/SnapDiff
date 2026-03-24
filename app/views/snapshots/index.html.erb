@@ -1,0 +1,71 @@
+<% content_for :title, "Snapshots — #{@endpoint.name}" %>
+
+<nav class="text-sm mb-5" style="color: #a89984;">
+  <%= link_to "Projects", projects_path, style: "color: #83a598;" %> /
+  <%= link_to @endpoint.project.name, @endpoint.project, style: "color: #83a598;" %> /
+  <%= link_to @endpoint.name, project_endpoint_path(@endpoint.project, @endpoint), style: "color: #83a598;" %> /
+  <span style="color: #ebdbb2;">Snapshots</span>
+</nav>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold" style="color: #ebdbb2;">
+    Snapshot history
+    <span class="text-base font-normal ml-1" style="color: #a89984;">— <%= @endpoint.name %></span>
+  </h1>
+  <%= button_to "Capture now", snapshots_path,
+        params: { snapshot: { endpoint_id: @endpoint.id } },
+        class: "px-4 py-2 rounded font-medium text-sm cursor-pointer",
+        style: "background-color: #b8bb26; color: #282828;" %>
+</div>
+
+<% if @snapshots.empty? %>
+  <div class="text-center py-16 rounded-lg" style="border: 2px dashed #504945;">
+    <p class="font-medium mb-1" style="color: #ebdbb2;">No snapshots yet</p>
+    <p class="text-sm" style="color: #a89984;">Capture your first snapshot to start monitoring</p>
+  </div>
+<% else %>
+  <div class="rounded-lg overflow-hidden" style="border: 1px solid #504945;">
+    <table class="w-full text-sm" style="background-color: #32302f;">
+      <thead>
+        <tr style="border-bottom: 1px solid #504945; background-color: #3c3836;">
+          <th class="text-left px-4 py-2 font-medium" style="color: #a89984;">Taken at</th>
+          <th class="text-left px-4 py-2 font-medium" style="color: #a89984;">Status</th>
+          <th class="text-left px-4 py-2 font-medium hidden md:table-cell" style="color: #a89984;">Response time</th>
+          <th class="text-left px-4 py-2 font-medium hidden md:table-cell" style="color: #a89984;">Triggered by</th>
+          <th class="px-4 py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @snapshots.each do |snapshot| %>
+          <tr style="border-bottom: 1px solid #3c3836;">
+            <td class="px-4 py-3" style="color: #ebdbb2;">
+              <%= snapshot.taken_at.strftime("%b %d, %Y %H:%M:%S") %>
+            </td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-0.5 rounded text-xs font-mono font-bold"
+                    style="background-color: #282828; color: <%= snapshot.success? ? '#b8bb26' : '#fb4934' %>;">
+                <%= snapshot.status_code %>
+              </span>
+            </td>
+            <td class="px-4 py-3 hidden md:table-cell" style="color: #a89984;">
+              <%= snapshot.response_time_ms ? "#{snapshot.response_time_ms}ms" : "—" %>
+            </td>
+            <td class="px-4 py-3 hidden md:table-cell">
+              <span class="px-1.5 py-0.5 rounded text-xs"
+                    style="background-color: #282828; color: #8ec07c;">
+                <%= snapshot.triggered_by %>
+              </span>
+            </td>
+            <td class="px-4 py-3 text-right">
+              <%= link_to "View", snapshot_path(snapshot),
+                    class: "text-xs px-2 py-1 rounded",
+                    style: "color: #a89984; background-color: #3c3836;" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= pagy_nav(@pagy) if @pagy.pages > 1 %>
+<% end %>

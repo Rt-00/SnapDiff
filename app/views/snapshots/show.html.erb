@@ -1,0 +1,57 @@
+<% content_for :title, "Snapshot ##{@snapshot.id} — SnapDiff" %>
+
+<nav class="text-sm mb-5" style="color: #a89984;">
+  <%= link_to "Projects", projects_path, style: "color: #83a598;" %> /
+  <%= link_to @snapshot.endpoint.project.name, @snapshot.endpoint.project, style: "color: #83a598;" %> /
+  <%= link_to @snapshot.endpoint.name, project_endpoint_path(@snapshot.endpoint.project, @snapshot.endpoint), style: "color: #83a598;" %> /
+  <span style="color: #ebdbb2;">Snapshot #<%= @snapshot.id %></span>
+</nav>
+
+<div class="flex items-start justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold" style="color: #ebdbb2;">Snapshot #<%= @snapshot.id %></h1>
+    <p class="text-sm mt-1" style="color: #a89984;">
+      <%= @snapshot.taken_at.strftime("%A, %B %d, %Y at %H:%M:%S UTC") %>
+    </p>
+  </div>
+  <%= link_to "Compare with another", new_diff_report_path(snapshot_a_id: @snapshot.id),
+        class: "px-3 py-1.5 rounded text-sm font-medium",
+        style: "background-color: #3c3836; color: #83a598; border: 1px solid #504945;" %>
+</div>
+
+<%# Stats row %>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+  <div class="rounded-lg p-4 text-center" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs mb-1" style="color: #a89984;">HTTP Status</p>
+    <p class="text-2xl font-bold font-mono" style="color: <%= @snapshot.success? ? '#b8bb26' : '#fb4934' %>;">
+      <%= @snapshot.status_code %>
+    </p>
+  </div>
+  <div class="rounded-lg p-4 text-center" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs mb-1" style="color: #a89984;">Response time</p>
+    <p class="text-2xl font-bold" style="color: #fe8019;">
+      <%= @snapshot.response_time_ms ? "#{@snapshot.response_time_ms}ms" : "—" %>
+    </p>
+  </div>
+  <div class="rounded-lg p-4 text-center" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs mb-1" style="color: #a89984;">Triggered by</p>
+    <p class="text-base font-medium" style="color: #8ec07c;"><%= @snapshot.triggered_by %></p>
+  </div>
+  <div class="rounded-lg p-4 text-center" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs mb-1" style="color: #a89984;">Endpoint</p>
+    <p class="text-sm truncate" style="color: #83a598;">
+      <%= link_to @snapshot.endpoint.name,
+            project_endpoint_path(@snapshot.endpoint.project, @snapshot.endpoint),
+            style: "color: #83a598;" %>
+    </p>
+  </div>
+</div>
+
+<%# Response body %>
+<div class="rounded-lg overflow-hidden" style="border: 1px solid #504945;">
+  <div class="px-4 py-3 flex items-center justify-between" style="background-color: #3c3836; border-bottom: 1px solid #504945;">
+    <h2 class="font-semibold text-sm" style="color: #ebdbb2;">Response body</h2>
+    <span class="text-xs" style="color: #a89984;">JSON</span>
+  </div>
+  <pre class="p-4 text-xs font-mono overflow-x-auto leading-relaxed" style="background-color: #1d2021; color: #b8bb26; max-height: 600px; overflow-y: auto;"><%= JSON.pretty_generate(@snapshot.response_body) %></pre>
+</div>

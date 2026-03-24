@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_011752) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_012003) do
+  create_table "diff_reports", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "diff_data"
+    t.integer "snapshot_a_id", null: false
+    t.integer "snapshot_b_id", null: false
+    t.string "summary"
+    t.datetime "updated_at", null: false
+    t.index ["snapshot_a_id"], name: "index_diff_reports_on_snapshot_a_id"
+    t.index ["snapshot_b_id"], name: "index_diff_reports_on_snapshot_b_id"
+  end
+
   create_table "endpoints", force: :cascade do |t|
     t.integer "baseline_snapshot_id"
     t.text "body"
@@ -58,6 +69,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_011752) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "diff_reports", "snapshot_as"
+  add_foreign_key "diff_reports", "snapshot_bs"
   add_foreign_key "endpoints", "projects"
   add_foreign_key "projects", "users"
   add_foreign_key "snapshots", "endpoints"

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   end
 
   resources :snapshots, only: %i[index show create]
-  resources :diff_reports, only: %i[show create]
+  resources :diff_reports, only: %i[new show create]
 
   # CI/CD API
   namespace :api do
