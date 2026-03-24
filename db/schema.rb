@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_020826) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_024331) do
   create_table "diff_reports", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "diff_data"
@@ -63,6 +63,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_020826) do
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.datetime "locked_at"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
