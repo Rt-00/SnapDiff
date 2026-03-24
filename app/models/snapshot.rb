@@ -12,6 +12,7 @@ class Snapshot < ApplicationRecord
 
   serialize :response_body, coder: JSON
 
+  before_destroy :clear_as_baseline
   before_validation :set_taken_at
 
   scope :ordered, -> { order(taken_at: :desc) }
@@ -26,6 +27,10 @@ class Snapshot < ApplicationRecord
   end
 
   private
+
+  def clear_as_baseline
+    Endpoint.where(baseline_snapshot_id: id).update_all(baseline_snapshot_id: nil)
+  end
 
   def set_taken_at
     self.taken_at ||= Time.current
