@@ -1,0 +1,163 @@
+<% content_for :title, "Diff Report ##{@diff_report.id} — SnapDiff" %>
+
+<div class="mb-5 flex items-center justify-between">
+  <div>
+    <h1 class="text-2xl font-bold" style="color: #ebdbb2;">Diff report</h1>
+    <p class="text-sm mt-0.5" style="color: #a89984;">
+      Snapshot #<%= @diff_report.snapshot_a_id %> → Snapshot #<%= @diff_report.snapshot_b_id %>
+    </p>
+  </div>
+
+  <%# Summary badge %>
+  <% total = @diff_report.total_changes %>
+  <div class="px-3 py-2 rounded-lg text-center min-w-20" style="background-color: <%= total > 0 ? '#2a1a00' : '#1e2a1e' %>; border: 1px solid <%= total > 0 ? '#fabd2f' : '#b8bb26' %>;">
+    <p class="text-2xl font-bold" style="color: <%= total > 0 ? '#fabd2f' : '#b8bb26' %>;"><%= total %></p>
+    <p class="text-xs" style="color: <%= total > 0 ? '#fabd2f' : '#b8bb26' %>;">changes</p>
+  </div>
+</div>
+
+<%# Metadata row %>
+<div class="grid sm:grid-cols-2 gap-4 mb-6">
+  <div class="rounded-lg p-4" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs font-medium mb-2" style="color: #a89984;">SNAPSHOT A (before)</p>
+    <p class="text-sm" style="color: #ebdbb2;">
+      #<%= @diff_report.snapshot_a_id %> —
+      <%= link_to snapshot_path(@diff_report.snapshot_a), style: "color: #83a598;" do %>
+        <%= @diff_report.snapshot_a.taken_at.strftime("%b %d %H:%M:%S") %>
+      <% end %>
+    </p>
+    <span class="inline-block mt-1 px-2 py-0.5 rounded text-xs font-mono"
+          style="background-color: #282828; color: <%= @diff_report.snapshot_a.success? ? '#b8bb26' : '#fb4934' %>;">
+      <%= @diff_report.snapshot_a.status_code %>
+    </span>
+  </div>
+  <div class="rounded-lg p-4" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs font-medium mb-2" style="color: #a89984;">SNAPSHOT B (after)</p>
+    <p class="text-sm" style="color: #ebdbb2;">
+      #<%= @diff_report.snapshot_b_id %> —
+      <%= link_to snapshot_path(@diff_report.snapshot_b), style: "color: #83a598;" do %>
+        <%= @diff_report.snapshot_b.taken_at.strftime("%b %d %H:%M:%S") %>
+      <% end %>
+    </p>
+    <span class="inline-block mt-1 px-2 py-0.5 rounded text-xs font-mono"
+          style="background-color: #282828; color: <%= @diff_report.snapshot_b.success? ? '#b8bb26' : '#fb4934' %>;">
+      <%= @diff_report.snapshot_b.status_code %>
+    </span>
+  </div>
+</div>
+
+<% data = @diff_report.diff_data || {} %>
+<% added   = (data["added"]   || data[:added]   || []).map { |c| c.transform_keys(&:to_s) } %>
+<% removed = (data["removed"] || data[:removed] || []).map { |c| c.transform_keys(&:to_s) } %>
+<% changed = (data["changed"] || data[:changed] || []).map { |c| c.transform_keys(&:to_s) } %>
+
+<% if added.empty? && removed.empty? && changed.empty? %>
+  <div class="rounded-lg p-8 text-center" style="background-color: #1e2a1e; border: 1px solid #b8bb26;">
+    <p class="text-4xl mb-2">✓</p>
+    <p class="font-semibold" style="color: #b8bb26;">No changes detected</p>
+    <p class="text-sm mt-1" style="color: #a89984;">The two snapshots are identical</p>
+  </div>
+<% else %>
+
+  <%# Legend %>
+  <div class="flex gap-4 mb-4 text-xs">
+    <% if added.any? %>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded-sm inline-block" style="background-color: #b8bb26;"></span>
+        <span style="color: #b8bb26;"><%= added.length %> added</span>
+      </span>
+    <% end %>
+    <% if removed.any? %>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded-sm inline-block" style="background-color: #fb4934;"></span>
+        <span style="color: #fb4934;"><%= removed.length %> removed</span>
+      </span>
+    <% end %>
+    <% if changed.any? %>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded-sm inline-block" style="background-color: #fabd2f;"></span>
+        <span style="color: #fabd2f;"><%= changed.length %> changed</span>
+      </span>
+    <% end %>
+  </div>
+
+  <%# Changes table %>
+  <div class="rounded-lg overflow-hidden" style="border: 1px solid #504945;">
+    <div class="px-4 py-3" style="background-color: #3c3836; border-bottom: 1px solid #504945;">
+      <h2 class="font-semibold text-sm" style="color: #ebdbb2;">Changes</h2>
+    </div>
+    <div style="background-color: #1d2021;">
+
+      <% unless added.empty? %>
+        <div class="px-4 py-2" style="background-color: #1e2a1e; border-bottom: 1px solid #2a3a2a;">
+          <p class="text-xs font-semibold uppercase tracking-wide" style="color: #b8bb26;">Added</p>
+        </div>
+        <% added.each do |change| %>
+          <div class="px-4 py-2 font-mono text-sm flex gap-4" style="border-bottom: 1px solid #282828;">
+            <span class="text-xs mt-0.5 flex-shrink-0" style="color: #b8bb26;">+</span>
+            <span style="color: #a89984;"><%= change["path"] %></span>
+            <span class="ml-auto" style="color: #b8bb26;"><%= change["value"].inspect %></span>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% unless removed.empty? %>
+        <div class="px-4 py-2" style="background-color: #2a1e1e; border-bottom: 1px solid #3a2828;">
+          <p class="text-xs font-semibold uppercase tracking-wide" style="color: #fb4934;">Removed</p>
+        </div>
+        <% removed.each do |change| %>
+          <div class="px-4 py-2 font-mono text-sm flex gap-4" style="border-bottom: 1px solid #282828;">
+            <span class="text-xs mt-0.5 flex-shrink-0" style="color: #fb4934;">-</span>
+            <span style="color: #a89984;"><%= change["path"] %></span>
+            <span class="ml-auto" style="color: #fb4934;"><%= change["value"].inspect %></span>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% unless changed.empty? %>
+        <div class="px-4 py-2" style="background-color: #2a2200; border-bottom: 1px solid #3a3200;">
+          <p class="text-xs font-semibold uppercase tracking-wide" style="color: #fabd2f;">Changed</p>
+        </div>
+        <% changed.each do |change| %>
+          <div class="px-4 py-3 font-mono text-sm" style="border-bottom: 1px solid #282828;">
+            <div class="flex gap-4 mb-1">
+              <span class="text-xs mt-0.5 flex-shrink-0" style="color: #fabd2f;">~</span>
+              <span style="color: #a89984;"><%= change["path"] %></span>
+            </div>
+            <div class="ml-4 pl-2 flex gap-2 text-xs" style="border-left: 2px solid #fb4934;">
+              <span style="color: #665c54;">before:</span>
+              <span style="color: #fb4934;"><%= change["old"].inspect %></span>
+            </div>
+            <div class="ml-4 pl-2 mt-1 flex gap-2 text-xs" style="border-left: 2px solid #b8bb26;">
+              <span style="color: #665c54;">after:</span>
+              <span style="color: #b8bb26;"><%= change["new"].inspect %></span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+    </div>
+  </div>
+
+  <%# Side-by-side raw JSON %>
+  <div class="mt-6">
+    <h2 class="font-semibold text-sm mb-3" style="color: #ebdbb2;">Side-by-side comparison</h2>
+    <div class="grid sm:grid-cols-2 gap-3">
+      <div class="rounded-lg overflow-hidden" style="border: 1px solid #504945;">
+        <div class="px-3 py-2 text-xs font-medium" style="background-color: #3c3836; color: #a89984; border-bottom: 1px solid #504945;">
+          Snapshot A (before)
+        </div>
+        <pre class="p-3 text-xs font-mono overflow-x-auto leading-relaxed"
+             style="background-color: #1d2021; color: #ebdbb2; max-height: 400px; overflow-y: auto;"><%= JSON.pretty_generate(@diff_report.snapshot_a.response_body || {}) %></pre>
+      </div>
+      <div class="rounded-lg overflow-hidden" style="border: 1px solid #504945;">
+        <div class="px-3 py-2 text-xs font-medium" style="background-color: #3c3836; color: #a89984; border-bottom: 1px solid #504945;">
+          Snapshot B (after)
+        </div>
+        <pre class="p-3 text-xs font-mono overflow-x-auto leading-relaxed"
+             style="background-color: #1d2021; color: #ebdbb2; max-height: 400px; overflow-y: auto;"><%= JSON.pretty_generate(@diff_report.snapshot_b.response_body || {}) %></pre>
+      </div>
+    </div>
+  </div>
+
+<% end %>

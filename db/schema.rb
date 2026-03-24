@@ -69,8 +69,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_012003) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "diff_reports", "snapshot_as"
-  add_foreign_key "diff_reports", "snapshot_bs"
+  add_foreign_key "diff_reports", "snapshots", column: "snapshot_a_id"
+  add_foreign_key "diff_reports", "snapshots", column: "snapshot_b_id"
   add_foreign_key "endpoints", "projects"
   add_foreign_key "projects", "users"
   add_foreign_key "snapshots", "endpoints"
