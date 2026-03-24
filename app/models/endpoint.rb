@@ -26,6 +26,7 @@ class Endpoint < ApplicationRecord
   serialize :headers, coder: JSON
   serialize :body, coder: JSON
 
+  before_destroy :nullify_baseline_snapshot
   after_initialize :set_defaults
 
   scope :ordered, -> { order(created_at: :desc) }
@@ -33,6 +34,10 @@ class Endpoint < ApplicationRecord
   delegate :user, to: :project
 
   private
+
+  def nullify_baseline_snapshot
+    update_column(:baseline_snapshot_id, nil) if baseline_snapshot_id?
+  end
 
   def url_not_internal_network
     return if url.blank?
