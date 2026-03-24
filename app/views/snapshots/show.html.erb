@@ -14,9 +14,15 @@
       <%= @snapshot.taken_at.strftime("%A, %B %d, %Y at %H:%M:%S UTC") %>
     </p>
   </div>
-  <%= link_to "Compare with another", new_diff_report_path(snapshot_a_id: @snapshot.id),
-        class: "px-3 py-1.5 rounded text-sm font-medium",
-        style: "background-color: #3c3836; color: #83a598; border: 1px solid #504945;" %>
+  <div class="flex gap-2">
+    <%= link_to "Compare with another", new_diff_report_path(snapshot_a_id: @snapshot.id),
+          class: "px-3 py-1.5 rounded text-sm font-medium",
+          style: "background-color: #3c3836; color: #83a598; border: 1px solid #504945;" %>
+    <%= button_to "Delete", snapshot_path(@snapshot), method: :delete,
+          form: { data: { turbo_confirm: "Delete #{@snapshot.display_name}? This cannot be undone." } },
+          class: "px-3 py-1.5 rounded text-sm font-medium cursor-pointer",
+          style: "background-color: #3c3836; color: #fb4934; border: 1px solid #504945;" %>
+  </div>
 </div>
 
 <%# Rename form %>

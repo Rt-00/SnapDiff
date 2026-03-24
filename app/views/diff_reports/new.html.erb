@@ -1,7 +1,12 @@
 <% content_for :title, "Compare Snapshots — SnapDiff" %>
 
 <div class="max-w-xl">
-  <h1 class="text-2xl font-bold mb-6" style="color: #ebdbb2;">Compare snapshots</h1>
+  <div class="flex items-center gap-3 mb-6">
+    <%= link_to "← Back", :back,
+          class: "text-sm",
+          style: "color: #a89984;" %>
+    <h1 class="text-2xl font-bold" style="color: #ebdbb2;">Compare snapshots</h1>
+  </div>
 
   <%= form_with url: diff_reports_path, method: :post, class: "space-y-5" do |f| %>
     <div class="rounded-lg p-5" style="background-color: #3c3836; border: 1px solid #504945;">

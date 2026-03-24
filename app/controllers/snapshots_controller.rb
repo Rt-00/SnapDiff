@@ -1,6 +1,6 @@
 class SnapshotsController < ApplicationController
   before_action :set_endpoint, only: %i[index create]
-  before_action :set_snapshot, only: %i[show update]
+  before_action :set_snapshot, only: %i[show update destroy]
 
   def index
     @pagy, @snapshots = paginate(
@@ -17,6 +17,13 @@ class SnapshotsController < ApplicationController
     else
       redirect_to snapshot_path(@snapshot), alert: "Could not rename snapshot."
     end
+  end
+
+  def destroy
+    endpoint = @snapshot.endpoint
+    @snapshot.destroy
+    redirect_to snapshots_path(endpoint_id: endpoint.id),
+                notice: "Snapshot deleted."
   end
 
   def create

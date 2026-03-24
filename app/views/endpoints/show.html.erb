@@ -125,6 +125,10 @@
                     method: :patch,
                     class: "text-xs px-2 py-1 rounded cursor-pointer",
                     style: "color: #fe8019; background-color: #3c3836; border: none;" %>
+              <%= button_to "Delete", snapshot_path(snapshot), method: :delete,
+                    form: { data: { turbo_confirm: "Delete #{snapshot.display_name}? This cannot be undone." } },
+                    class: "text-xs px-2 py-1 rounded cursor-pointer",
+                    style: "color: #fb4934; background-color: #3c3836; border: none;" %>
             </td>
           </tr>
         <% end %>
