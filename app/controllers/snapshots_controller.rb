@@ -1,6 +1,6 @@
 class SnapshotsController < ApplicationController
   before_action :set_endpoint, only: %i[index create]
-  before_action :set_snapshot, only: %i[show]
+  before_action :set_snapshot, only: %i[show update]
 
   def index
     @pagy, @snapshots = paginate(
@@ -10,6 +10,14 @@ class SnapshotsController < ApplicationController
   end
 
   def show; end
+
+  def update
+    if @snapshot.update(name: params[:name].presence)
+      redirect_to snapshot_path(@snapshot), notice: "Snapshot renamed."
+    else
+      redirect_to snapshot_path(@snapshot), alert: "Could not rename snapshot."
+    end
+  end
 
   def create
     result = Snapshots::CaptureService.new(

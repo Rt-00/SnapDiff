@@ -3,7 +3,11 @@ class DiffReportsController < ApplicationController
 
   def new
     @snapshot_a_id = params[:snapshot_a_id]
-    @endpoints = Endpoint.where(project: current_user.projects).order(:name)
+    @snapshots_for_select = Snapshot
+      .joins(endpoint: :project)
+      .where(projects: { user_id: current_user.id })
+      .order("projects.name, endpoints.name, snapshots.taken_at DESC")
+      .select("snapshots.*, endpoints.name AS endpoint_name, projects.name AS project_name")
   end
 
   def show; end

@@ -17,6 +17,10 @@ class Snapshot < ApplicationRecord
   scope :ordered, -> { order(taken_at: :desc) }
   scope :recent,  -> { ordered.limit(20) }
 
+  def display_name
+    name.presence || "Snapshot ##{id}"
+  end
+
   def success?
     status_code.to_s.start_with?("2")
   end

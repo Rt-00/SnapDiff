@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_014213) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_020826) do
   create_table "diff_reports", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "diff_data"
@@ -48,6 +48,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_014213) do
   create_table "snapshots", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "endpoint_id", null: false
+    t.string "name"
     t.text "response_body"
     t.integer "response_time_ms"
     t.integer "status_code"

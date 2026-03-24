@@ -42,7 +42,7 @@
     <p class="text-xs mb-1" style="color: #a89984;">Baseline snapshot</p>
     <p class="text-sm" style="color: #ebdbb2;">
       <% if @endpoint.baseline_snapshot %>
-        <%= link_to "Snapshot ##{@endpoint.baseline_snapshot_id}",
+        <%= link_to @endpoint.baseline_snapshot.display_name,
               snapshot_path(@endpoint.baseline_snapshot),
               style: "color: #83a598;" %>
       <% else %>
@@ -84,6 +84,7 @@
     <table class="w-full text-sm" style="background-color: #32302f;">
       <thead>
         <tr style="border-bottom: 1px solid #504945;">
+          <th class="text-left px-4 py-2 font-medium" style="color: #a89984;">Name</th>
           <th class="text-left px-4 py-2 font-medium" style="color: #a89984;">Taken at</th>
           <th class="text-left px-4 py-2 font-medium" style="color: #a89984;">Status</th>
           <th class="text-left px-4 py-2 font-medium hidden md:table-cell" style="color: #a89984;">Response time</th>
@@ -94,6 +95,9 @@
       <tbody>
         <% @snapshots.each do |snapshot| %>
           <tr style="border-bottom: 1px solid #3c3836;">
+            <td class="px-4 py-3" style="color: #ebdbb2;">
+              <%= snapshot.display_name %>
+            </td>
             <td class="px-4 py-3" style="color: #ebdbb2;">
               <%= snapshot.taken_at.strftime("%b %d %H:%M:%S") %>
             </td>

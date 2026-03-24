@@ -7,12 +7,21 @@
     <div class="rounded-lg p-5" style="background-color: #3c3836; border: 1px solid #504945;">
       <h2 class="font-semibold mb-3 text-sm" style="color: #a89984;">SNAPSHOT A (before)</h2>
       <div>
-        <%= label_tag :snapshot_a_id, "Snapshot ID", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
-        <%= number_field_tag :snapshot_a_id, @snapshot_a_id,
-              min: 1,
-              placeholder: "e.g. 42",
-              class: "w-full px-3 py-2 rounded text-sm font-mono",
-              style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;" %>
+        <%= label_tag :snapshot_a_id, "Snapshot", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+        <select name="snapshot_a_id" id="snapshot_a_id"
+                class="w-full px-3 py-2 rounded text-sm"
+                style="background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;">
+          <option value="">— select a snapshot —</option>
+          <% @snapshots_for_select.group_by { |s| "#{s.project_name} / #{s.endpoint_name}" }.each do |group, snapshots| %>
+            <optgroup label="<%= group %>">
+              <% snapshots.each do |s| %>
+                <option value="<%= s.id %>" <%= 'selected' if s.id.to_s == @snapshot_a_id.to_s %>>
+                  <%= s.display_name %> — <%= s.taken_at.strftime("%b %d, %Y %H:%M") %> · <%= s.status_code %>
+                </option>
+              <% end %>
+            </optgroup>
+          <% end %>
+        </select>
       </div>
     </div>
 
@@ -21,13 +30,21 @@
     <div class="rounded-lg p-5" style="background-color: #3c3836; border: 1px solid #504945;">
       <h2 class="font-semibold mb-3 text-sm" style="color: #a89984;">SNAPSHOT B (after)</h2>
       <div>
-        <%= label_tag :snapshot_b_id, "Snapshot ID", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
-        <%= number_field_tag :snapshot_b_id,
-              nil,
-              min: 1,
-              placeholder: "e.g. 43",
-              class: "w-full px-3 py-2 rounded text-sm font-mono",
-              style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;" %>
+        <%= label_tag :snapshot_b_id, "Snapshot", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+        <select name="snapshot_b_id" id="snapshot_b_id"
+                class="w-full px-3 py-2 rounded text-sm"
+                style="background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;">
+          <option value="">— select a snapshot —</option>
+          <% @snapshots_for_select.reject { |s| s.id.to_s == @snapshot_a_id.to_s }.group_by { |s| "#{s.project_name} / #{s.endpoint_name}" }.each do |group, snapshots| %>
+            <optgroup label="<%= group %>">
+              <% snapshots.each do |s| %>
+                <option value="<%= s.id %>">
+                  <%= s.display_name %> — <%= s.taken_at.strftime("%b %d, %Y %H:%M") %> · <%= s.status_code %>
+                </option>
+              <% end %>
+            </optgroup>
+          <% end %>
+        </select>
       </div>
     </div>
 
