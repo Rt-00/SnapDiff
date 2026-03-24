@@ -4,6 +4,8 @@ class Snapshot < ApplicationRecord
   belongs_to :endpoint
   has_one :project, through: :endpoint
   has_one :user, through: :project
+  has_many :diff_reports_as_a, class_name: "DiffReport", foreign_key: :snapshot_a_id, dependent: :destroy
+  has_many :diff_reports_as_b, class_name: "DiffReport", foreign_key: :snapshot_b_id, dependent: :destroy
 
   validates :taken_at, presence: true
   validates :triggered_by, inclusion: { in: TRIGGERED_BY }
