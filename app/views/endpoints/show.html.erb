@@ -1,0 +1,130 @@
+<% content_for :title, "#{@endpoint.name} — SnapDiff" %>
+
+<nav class="text-sm mb-5" style="color: #a89984;">
+  <%= link_to "Projects", projects_path, style: "color: #83a598;" %> /
+  <%= link_to @project.name, @project, style: "color: #83a598;" %> /
+  <span style="color: #ebdbb2;"><%= @endpoint.name %></span>
+</nav>
+
+<div class="flex items-start justify-between mb-6">
+  <div>
+    <div class="flex items-center gap-2 mb-1">
+      <span class="px-2 py-0.5 rounded text-xs font-mono font-bold"
+            style="background-color: #3c3836; color: <%= @endpoint.http_method == 'GET' ? '#b8bb26' : '#fe8019' %>;">
+        <%= @endpoint.http_method %>
+      </span>
+      <h1 class="text-2xl font-bold" style="color: #ebdbb2;"><%= @endpoint.name %></h1>
+    </div>
+    <p class="font-mono text-sm" style="color: #83a598;"><%= @endpoint.url %></p>
+  </div>
+  <div class="flex gap-2">
+    <%= link_to "Edit", edit_project_endpoint_path(@project, @endpoint),
+          class: "px-3 py-1.5 rounded text-sm font-medium",
+          style: "background-color: #3c3836; color: #ebdbb2; border: 1px solid #504945;" %>
+    <%= button_to "Capture snapshot", snapshots_path,
+          params: { snapshot: { endpoint_id: @endpoint.id } },
+          class: "px-3 py-1.5 rounded text-sm font-medium cursor-pointer",
+          style: "background-color: #b8bb26; color: #282828;" %>
+  </div>
+</div>
+
+<div class="grid sm:grid-cols-3 gap-4 mb-6">
+  <%# Schedule badge %>
+  <div class="rounded-lg p-4" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs mb-1" style="color: #a89984;">Schedule</p>
+    <p class="font-mono text-sm" style="color: #ebdbb2;">
+      <%= @endpoint.schedule.present? ? @endpoint.schedule : "Manual only" %>
+    </p>
+  </div>
+
+  <%# Baseline badge %>
+  <div class="rounded-lg p-4" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs mb-1" style="color: #a89984;">Baseline snapshot</p>
+    <p class="text-sm" style="color: #ebdbb2;">
+      <% if @endpoint.baseline_snapshot %>
+        <%= link_to "Snapshot ##{@endpoint.baseline_snapshot_id}",
+              snapshot_path(@endpoint.baseline_snapshot),
+              style: "color: #83a598;" %>
+      <% else %>
+        <span style="color: #a89984;">None set</span>
+      <% end %>
+    </p>
+  </div>
+
+  <%# Snapshot count %>
+  <div class="rounded-lg p-4" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs mb-1" style="color: #a89984;">Total snapshots</p>
+    <p class="text-2xl font-bold" style="color: #fe8019;">
+      <%= @endpoint.snapshots.count %>
+    </p>
+  </div>
+</div>
+
+<%# Headers / Body (if set) %>
+<% if @endpoint.headers.present? && @endpoint.headers != {} %>
+  <div class="rounded-lg p-4 mb-4" style="background-color: #3c3836; border: 1px solid #504945;">
+    <p class="text-xs font-medium mb-2" style="color: #a89984;">Request headers</p>
+    <pre class="text-xs font-mono overflow-x-auto" style="color: #b8bb26;"><%= JSON.pretty_generate(@endpoint.headers) %></pre>
+  </div>
+<% end %>
+
+<%# Recent snapshots %>
+<div class="rounded-lg overflow-hidden" style="border: 1px solid #504945;">
+  <div class="px-4 py-3 flex items-center justify-between" style="background-color: #3c3836; border-bottom: 1px solid #504945;">
+    <h2 class="font-semibold text-sm" style="color: #ebdbb2;">Recent snapshots</h2>
+    <%= link_to "View all", snapshots_path(endpoint_id: @endpoint.id),
+          class: "text-xs", style: "color: #83a598;" %>
+  </div>
+
+  <% if @snapshots.empty? %>
+    <div class="text-center py-8" style="background-color: #32302f;">
+      <p class="text-sm" style="color: #a89984;">No snapshots yet — capture one to get started</p>
+    </div>
+  <% else %>
+    <table class="w-full text-sm" style="background-color: #32302f;">
+      <thead>
+        <tr style="border-bottom: 1px solid #504945;">
+          <th class="text-left px-4 py-2 font-medium" style="color: #a89984;">Taken at</th>
+          <th class="text-left px-4 py-2 font-medium" style="color: #a89984;">Status</th>
+          <th class="text-left px-4 py-2 font-medium hidden md:table-cell" style="color: #a89984;">Response time</th>
+          <th class="text-left px-4 py-2 font-medium hidden md:table-cell" style="color: #a89984;">Triggered by</th>
+          <th class="px-4 py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @snapshots.each do |snapshot| %>
+          <tr style="border-bottom: 1px solid #3c3836;">
+            <td class="px-4 py-3" style="color: #ebdbb2;">
+              <%= snapshot.taken_at.strftime("%b %d %H:%M:%S") %>
+            </td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-0.5 rounded text-xs font-mono"
+                    style="background-color: #3c3836; color: <%= snapshot.status_code.to_s.start_with?('2') ? '#b8bb26' : '#fb4934' %>;">
+                <%= snapshot.status_code %>
+              </span>
+            </td>
+            <td class="px-4 py-3 hidden md:table-cell" style="color: #a89984;">
+              <%= snapshot.response_time_ms ? "#{snapshot.response_time_ms}ms" : "—" %>
+            </td>
+            <td class="px-4 py-3 hidden md:table-cell">
+              <span class="px-1.5 py-0.5 rounded text-xs"
+                    style="background-color: #282828; color: #8ec07c;">
+                <%= snapshot.triggered_by %>
+              </span>
+            </td>
+            <td class="px-4 py-3 text-right flex gap-2 justify-end">
+              <%= link_to "View", snapshot_path(snapshot),
+                    class: "text-xs px-2 py-1 rounded",
+                    style: "color: #a89984; background-color: #3c3836;" %>
+              <%= button_to "Set baseline", set_baseline_project_endpoint_path(@project, @endpoint),
+                    params: { snapshot_id: snapshot.id },
+                    method: :patch,
+                    class: "text-xs px-2 py-1 rounded cursor-pointer",
+                    style: "color: #fe8019; background-color: #3c3836; border: none;" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

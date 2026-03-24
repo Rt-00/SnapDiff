@@ -1,0 +1,64 @@
+<%= form_with model: [project, endpoint], class: "space-y-4" do |f| %>
+  <%= render "shared/form_errors", resource: endpoint %>
+
+  <div class="grid sm:grid-cols-2 gap-4">
+    <div class="sm:col-span-2">
+      <%= f.label :name, class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+      <%= f.text_field :name, placeholder: "Users API",
+            class: "w-full px-3 py-2 rounded text-sm",
+            style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;" %>
+    </div>
+
+    <div class="sm:col-span-2">
+      <%= f.label :url, "URL", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+      <%= f.url_field :url, placeholder: "https://api.example.com/users",
+            class: "w-full px-3 py-2 rounded text-sm font-mono",
+            style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;" %>
+    </div>
+
+    <div>
+      <%= f.label :http_method, "HTTP Method", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+      <%= f.select :http_method, Endpoint::HTTP_METHODS,
+            {},
+            class: "w-full px-3 py-2 rounded text-sm",
+            style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;" %>
+    </div>
+
+    <div>
+      <%= f.label :schedule, "Cron Schedule", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+      <%= f.text_field :schedule, placeholder: "0 * * * * (every hour)",
+            class: "w-full px-3 py-2 rounded text-sm font-mono",
+            style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none;" %>
+      <p class="text-xs mt-1" style="color: #665c54;">Leave blank for manual-only snapshots</p>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :headers, "Request Headers (JSON)", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+    <%= f.text_area :headers,
+          value: endpoint.headers.present? ? JSON.pretty_generate(endpoint.headers) : "{}",
+          rows: 4,
+          placeholder: '{"Authorization": "Bearer token", "Accept": "application/json"}',
+          class: "w-full px-3 py-2 rounded text-sm font-mono",
+          style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none; resize: vertical;" %>
+  </div>
+
+  <div>
+    <%= f.label :body, "Request Body (JSON)", class: "block text-sm font-medium mb-1", style: "color: #d5c4a1;" %>
+    <%= f.text_area :body,
+          value: endpoint.body.present? ? JSON.pretty_generate(endpoint.body) : "{}",
+          rows: 4,
+          placeholder: '{"key": "value"}',
+          class: "w-full px-3 py-2 rounded text-sm font-mono",
+          style: "background-color: #282828; border: 1px solid #504945; color: #ebdbb2; outline: none; resize: vertical;" %>
+    <p class="text-xs mt-1" style="color: #665c54;">Only used for POST/PUT/PATCH requests</p>
+  </div>
+
+  <div class="flex gap-3 pt-1">
+    <%= f.submit class: "px-4 py-2 rounded font-medium text-sm cursor-pointer",
+          style: "background-color: #fe8019; color: #282828;" %>
+    <%= link_to "Cancel", endpoint.persisted? ? project_endpoint_path(project, endpoint) : project_path(project),
+          class: "px-4 py-2 rounded font-medium text-sm",
+          style: "background-color: #3c3836; color: #a89984; border: 1px solid #504945;" %>
+  </div>
+<% end %>

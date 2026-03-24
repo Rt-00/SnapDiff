@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_011456) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_011752) do
   create_table "endpoints", force: :cascade do |t|
     t.integer "baseline_snapshot_id"
     t.text "body"
@@ -34,6 +34,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_011456) do
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
+  create_table "snapshots", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "endpoint_id", null: false
+    t.text "response_body"
+    t.integer "response_time_ms"
+    t.integer "status_code"
+    t.datetime "taken_at"
+    t.string "triggered_by"
+    t.datetime "updated_at", null: false
+    t.index ["endpoint_id"], name: "index_snapshots_on_endpoint_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -48,4 +60,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_011456) do
 
   add_foreign_key "endpoints", "projects"
   add_foreign_key "projects", "users"
+  add_foreign_key "snapshots", "endpoints"
 end

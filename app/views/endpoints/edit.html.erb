@@ -1,0 +1,15 @@
+<% content_for :title, "Edit #{@endpoint.name} — SnapDiff" %>
+
+<div class="max-w-2xl">
+  <nav class="text-sm mb-5" style="color: #a89984;">
+    <%= link_to "Projects", projects_path, style: "color: #83a598;" %> /
+    <%= link_to @project.name, @project, style: "color: #83a598;" %> /
+    <%= link_to @endpoint.name, project_endpoint_path(@project, @endpoint), style: "color: #83a598;" %> / Edit
+  </nav>
+
+  <h1 class="text-2xl font-bold mb-6" style="color: #ebdbb2;">Edit endpoint</h1>
+
+  <div class="rounded-lg p-6" style="background-color: #3c3836; border: 1px solid #504945;">
+    <%= render "form", project: @project, endpoint: @endpoint %>
+  </div>
+</div>
