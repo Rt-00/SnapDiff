@@ -1,31 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="h-full">
   <head>
-    <title><%= content_for(:title) || "Snap Diff" %></title>
+    <title><%= content_for(:title) || "SnapDiff" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Snap Diff">
+    <meta name="application-name" content="SnapDiff">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="h-full flex flex-col" style="background-color: #282828; color: #ebdbb2;">
+
+    <%# ── Top Navigation Bar ── %>
+    <header style="background-color: #1d2021; border-bottom: 1px solid #3c3836;" class="flex-none">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-14 items-center justify-between">
+
+          <%# Logo %>
+          <%= link_to root_path, class: "flex items-center gap-2 group" do %>
+            <span class="text-xl font-bold" style="color: #fe8019;">⬡</span>
+            <span class="font-bold tracking-tight" style="color: #ebdbb2;">
+              Snap<span style="color: #fe8019;">Diff</span>
+            </span>
+          <% end %>
+
+          <%# Nav links — only when signed in %>
+          <% if user_signed_in? %>
+            <nav class="hidden sm:flex items-center gap-1">
+              <%= link_to "Projects", projects_path,
+                    class: "px-3 py-1.5 rounded text-sm font-medium transition-colors",
+                    style: current_page?(projects_path) ?
+                      "background-color: #3c3836; color: #fe8019;" :
+                      "color: #a89984;" %>
+            </nav>
+
+            <%# User menu %>
+            <div class="flex items-center gap-3">
+              <span class="text-sm" style="color: #a89984;"><%= current_user.email %></span>
+              <%= button_to "Sign out", destroy_user_session_path, method: :delete,
+                    class: "px-3 py-1.5 rounded text-sm font-medium transition-colors cursor-pointer",
+                    style: "background-color: #3c3836; color: #a89984; border: 1px solid #504945;" %>
+            </div>
+          <% else %>
+            <div class="flex items-center gap-2">
+              <%= link_to "Sign in", new_user_session_path,
+                    class: "px-3 py-1.5 rounded text-sm font-medium",
+                    style: "color: #83a598;" %>
+              <%= link_to "Sign up", new_user_registration_path,
+                    class: "px-3 py-1.5 rounded text-sm font-medium",
+                    style: "background-color: #fe8019; color: #282828;" %>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+    </header>
+
+    <%# ── Flash messages ── %>
+    <% if notice || alert %>
+      <div id="flash" class="flex-none" data-controller="flash">
+        <% if notice %>
+          <div class="px-4 py-3 text-sm flex items-center justify-between"
+               style="background-color: #1e2a1e; border-bottom: 1px solid #b8bb26; color: #b8bb26;">
+            <span>✓ <%= notice %></span>
+            <button data-action="flash#dismiss" style="color: #b8bb26; opacity: 0.6;" class="hover:opacity-100">✕</button>
+          </div>
+        <% end %>
+        <% if alert %>
+          <div class="px-4 py-3 text-sm flex items-center justify-between"
+               style="background-color: #2a1e1e; border-bottom: 1px solid #fb4934; color: #fb4934;">
+            <span>✗ <%= alert %></span>
+            <button data-action="flash#dismiss" style="color: #fb4934; opacity: 0.6;" class="hover:opacity-100">✕</button>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%# ── Main content ── %>
+    <main class="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <%= yield %>
     </main>
+
+    <%# ── Footer ── %>
+    <footer class="flex-none py-4 text-center text-xs" style="color: #665c54; border-top: 1px solid #3c3836;">
+      SnapDiff — snapshot, compare, monitor
+    </footer>
+
   </body>
 </html>

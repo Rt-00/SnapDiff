@@ -19,8 +19,18 @@ gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+# Authentication
+gem "devise"
+
+# HTTP client for snapshot capture
+gem "faraday"
+
+# Diffing
+gem "hashdiff"
+gem "diffy"
+
+# Pagination
+gem "pagy"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -54,6 +64,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Test factories
+  gem "factory_bot_rails"
 end
 
 group :development do
@@ -65,4 +78,10 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Code coverage
+  gem "simplecov", require: false
+
+  # HTTP mocking
+  gem "webmock"
 end
