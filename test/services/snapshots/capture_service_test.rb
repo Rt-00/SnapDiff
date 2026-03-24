@@ -94,11 +94,11 @@ class Snapshots::CaptureServiceTest < ActiveSupport::TestCase
     assert_equal 201, result.snapshot.status_code
   end
 
-  test "enqueues DiffAndAlertJob after successful capture" do
+  test "enqueues DiffJob after successful capture" do
     stub_request(:get, "https://api.example.com/data")
       .to_return(status: 200, body: "{}", headers: {})
 
-    assert_enqueued_with(job: DiffAndAlertJob) do
+    assert_enqueued_with(job: DiffJob) do
       Snapshots::CaptureService.new(endpoint: @endpoint).call
     end
   end

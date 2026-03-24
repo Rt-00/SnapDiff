@@ -23,8 +23,6 @@ module Snapshots
         summary:    summary
       )
 
-      Snapshots::AlertService.call(report) if report.has_changes?
-
       report
     end
 

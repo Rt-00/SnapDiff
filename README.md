@@ -64,11 +64,6 @@ bundle exec rails test test/controllers
 ## Environment Variables
 
 ```bash
-# Notifications (optional)
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
-
-# Rails
 SECRET_KEY_BASE=
 RAILS_ENV=production
 ```

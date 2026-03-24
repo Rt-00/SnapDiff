@@ -27,7 +27,7 @@ module Snapshots
         triggered_by:  @triggered_by
       )
 
-      DiffAndAlertJob.perform_later(snapshot.id)
+      DiffJob.perform_later(snapshot.id)
 
       Result.new(snapshot: snapshot)
     rescue Faraday::Error => e

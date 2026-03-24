@@ -1,6 +1,6 @@
 require "test_helper"
 
-class DiffAndAlertJobTest < ActiveJob::TestCase
+class DiffJobTest < ActiveJob::TestCase
   setup do
     @endpoint   = create(:endpoint)
     @snapshot_a = create(:snapshot, endpoint: @endpoint,
@@ -11,13 +11,13 @@ class DiffAndAlertJobTest < ActiveJob::TestCase
 
   test "creates a DiffReport for a snapshot with a previous" do
     assert_difference "DiffReport.count", 1 do
-      DiffAndAlertJob.perform_now(@snapshot_b.id)
+      DiffJob.perform_now(@snapshot_b.id)
     end
   end
 
   test "does nothing when snapshot not found" do
     assert_no_difference "DiffReport.count" do
-      DiffAndAlertJob.perform_now(99999)
+      DiffJob.perform_now(99999)
     end
   end
 
@@ -26,13 +26,13 @@ class DiffAndAlertJobTest < ActiveJob::TestCase
     snapshot = create(:snapshot, endpoint: isolated_endpoint)
 
     assert_no_difference "DiffReport.count" do
-      DiffAndAlertJob.perform_now(snapshot.id)
+      DiffJob.perform_now(snapshot.id)
     end
   end
 
   test "can be enqueued" do
-    assert_enqueued_with(job: DiffAndAlertJob, args: [ @snapshot_b.id ]) do
-      DiffAndAlertJob.perform_later(@snapshot_b.id)
+    assert_enqueued_with(job: DiffJob, args: [ @snapshot_b.id ]) do
+      DiffJob.perform_later(@snapshot_b.id)
     end
   end
 end
