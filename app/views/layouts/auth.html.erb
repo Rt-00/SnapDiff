@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <title><%= content_for(:title) || "SnapDiff" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="h-full flex items-center justify-center" style="background-color: #282828;">
+
+    <div class="w-full max-w-sm px-4">
+      <%# Logo %>
+      <div class="text-center mb-8">
+        <span class="text-4xl font-bold" style="color: #fe8019;">⬡</span>
+        <h1 class="mt-2 text-2xl font-bold" style="color: #ebdbb2;">
+          Snap<span style="color: #fe8019;">Diff</span>
+        </h1>
+        <p class="mt-1 text-sm" style="color: #a89984;">snapshot, compare, monitor</p>
+      </div>
+
+      <%# Flash messages %>
+      <% if notice %>
+        <div class="mb-4 p-3 rounded text-sm" style="background-color: #1e2a1e; border: 1px solid #b8bb26; color: #b8bb26;">
+          <%= notice %>
+        </div>
+      <% end %>
+      <% if alert %>
+        <div class="mb-4 p-3 rounded text-sm" style="background-color: #2a1e1e; border: 1px solid #fb4934; color: #fb4934;">
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <div class="rounded-lg p-6" style="background-color: #3c3836; border: 1px solid #504945;">
+        <%= yield %>
+      </div>
+    </div>
+
+  </body>
+</html>
