@@ -19,7 +19,7 @@ class Endpoint < ApplicationRecord
   belongs_to :baseline_snapshot, class_name: "Snapshot", optional: true
 
   validates :name, presence: true
-  validates :url, presence: true, format: { with: /\Ahttps?:\/\/.+/, message: "must be a valid HTTP/HTTPS URL" }
+  validates :url, presence: true, format: { with: /\Ahttps?:\/\/.+\z/, message: "must be a valid HTTP/HTTPS URL" }
   validates :http_method, presence: true, inclusion: { in: HTTP_METHODS }
   validate :url_not_internal_network
 

@@ -6,8 +6,17 @@ module Api
 
     def authenticate_api_token!
       token = request.headers["Authorization"]&.delete_prefix("Bearer ")&.strip
-      @current_user = User.find_by_api_token(token)
-      render json: { error: "Unauthorized" }, status: :unauthorized unless @current_user
+      return unauthorized! if token.blank?
+
+      user = User.find_by_api_token(token)
+      return unauthorized! unless user
+      return unauthorized! unless ActiveSupport::SecurityUtils.secure_compare(user.api_token, token)
+
+      @current_user = user
+    end
+
+    def unauthorized!
+      render json: { error: "Unauthorized" }, status: :unauthorized
     end
 
     def current_user

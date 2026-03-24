@@ -30,9 +30,9 @@ class DiffReportsController < ApplicationController
       snapshot_b: snapshot_b
     ) do |r|
       service = Snapshots::DiffService.new(snapshot_b)
-      diff_data = service.send(:compute_diff, snapshot_a.response_body, snapshot_b.response_body)
+      diff_data = service.compute_diff(snapshot_a.response_body, snapshot_b.response_body)
       r.diff_data = diff_data
-      r.summary   = service.send(:summarize, diff_data)
+      r.summary   = service.summarize(diff_data)
     end
 
     redirect_to diff_report_path(report)
