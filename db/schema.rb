@@ -10,44 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_024331) do
-  create_table "diff_reports", force: :cascade do |t|
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_025531) do
+  create_table "diff_reports", id: :string, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "diff_data"
-    t.integer "snapshot_a_id", null: false
-    t.integer "snapshot_b_id", null: false
+    t.string "snapshot_a_id", null: false
+    t.string "snapshot_b_id", null: false
     t.string "summary"
     t.datetime "updated_at", null: false
     t.index ["snapshot_a_id"], name: "index_diff_reports_on_snapshot_a_id"
     t.index ["snapshot_b_id"], name: "index_diff_reports_on_snapshot_b_id"
   end
 
-  create_table "endpoints", force: :cascade do |t|
-    t.integer "baseline_snapshot_id"
+  create_table "endpoints", id: :string, force: :cascade do |t|
+    t.string "baseline_snapshot_id"
     t.text "body"
     t.datetime "created_at", null: false
     t.text "headers"
     t.string "http_method"
     t.string "name"
-    t.integer "project_id", null: false
+    t.string "project_id", null: false
     t.string "schedule"
     t.datetime "updated_at", null: false
     t.string "url"
     t.index ["project_id"], name: "index_endpoints_on_project_id"
   end
 
-  create_table "projects", force: :cascade do |t|
+  create_table "projects", id: :string, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name"
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.string "user_id", null: false
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
-  create_table "snapshots", force: :cascade do |t|
+  create_table "snapshots", id: :string, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "endpoint_id", null: false
+    t.string "endpoint_id", null: false
     t.string "name"
     t.text "response_body"
     t.integer "response_time_ms"
@@ -58,7 +58,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_024331) do
     t.index ["endpoint_id"], name: "index_snapshots_on_endpoint_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :string, force: :cascade do |t|
     t.string "api_token"
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -77,6 +77,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_024331) do
   add_foreign_key "diff_reports", "snapshots", column: "snapshot_a_id"
   add_foreign_key "diff_reports", "snapshots", column: "snapshot_b_id"
   add_foreign_key "endpoints", "projects"
+  add_foreign_key "endpoints", "snapshots", column: "baseline_snapshot_id"
   add_foreign_key "projects", "users"
   add_foreign_key "snapshots", "endpoints"
 end

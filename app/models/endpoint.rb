@@ -1,3 +1,5 @@
+require "ipaddr"
+
 class Endpoint < ApplicationRecord
   HTTP_METHODS = %w[GET POST PUT PATCH DELETE HEAD OPTIONS].freeze
 
